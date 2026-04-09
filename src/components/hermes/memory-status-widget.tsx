@@ -6,7 +6,12 @@ import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 export function MemoryStatusWidget() {
-  const { memoryL1, memoryL1Usage, memoryL2, memoryL3, memoryLoading, fetchMemory } = useHermesStore();
+  const memoryL1 = useHermesStore(s => s.memoryL1);
+const memoryL1Usage = useHermesStore(s => s.memoryL1Usage);
+const memoryL2 = useHermesStore(s => s.memoryL2);
+const memoryL3 = useHermesStore(s => s.memoryL3);
+const memoryLoading = useHermesStore(s => s.memoryLoading);
+const fetchMemory = useHermesStore(s => s.fetchMemory);;
 
   useEffect(() => {
     fetchMemory();

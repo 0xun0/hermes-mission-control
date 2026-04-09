@@ -4,21 +4,20 @@ import { useState } from 'react';
 import { useInstanceStore } from '@/lib/store/instance-store';
 import { INSTANCE_CONFIGS, Task, TaskStatus } from '@/types';
 import { KanbanBoard } from '@/components/tasks/kanban-board';
-import { CalendarView } from '@/components/calendar/calendar-view';
+import dynamic from 'next/dynamic';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { 
-  LayoutGrid, 
-  List as ListIcon, 
-  Calendar as CalendarIcon, 
-  Table as TableIcon, 
-  Clock, 
-  GanttChart, 
-  CreditCard,
-  Plus,
-  Search
-} from 'lucide-react';
+import { Icon } from '@iconify/react';
+
+// Lazy load calendar (heavy dependency)
+const CalendarView = dynamic(
+  () => import('@/components/calendar/calendar-view').then(m => m.CalendarView),
+  { 
+    ssr: false,
+    loading: () => <div className="h-[400px] bg-[#161920] rounded-xl animate-pulse" />
+  }
+);
 
 // Mock tasks for demonstration
 const initialTasks: Task[] = [
@@ -66,7 +65,7 @@ export default function TasksPage() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3">
           {/* Search/Filter Bar */}
           <div className="relative flex-1 sm:flex-initial">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
+            <Icon icon="solar:search-linear" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
             <input 
               type="text" 
               placeholder="Search tasks..." 
@@ -77,14 +76,14 @@ export default function TasksPage() {
           <div className="flex items-center gap-2">
             {/* View Switcher */}
             <div className="flex-1 sm:flex-initial flex items-center gap-1 p-1 bg-surface border border-border rounded-xl overflow-x-auto scrollbar-hide">
-              <ViewButton mode="kanban" current={viewMode} onClick={setViewMode} icon={<LayoutGrid className="w-4 h-4" />} label="Kanban" />
-              <ViewButton mode="list" current={viewMode} onClick={setViewMode} icon={<ListIcon className="w-4 h-4" />} label="List" />
-              <ViewButton mode="calendar" current={viewMode} onClick={setViewMode} icon={<CalendarIcon className="w-4 h-4" />} label="Calendar" />
-              <ViewButton mode="table" current={viewMode} onClick={setViewMode} icon={<TableIcon className="w-4 h-4" />} label="Table" />
+              <ViewButton mode="kanban" current={viewMode} onClick={setViewMode} icon={<Icon icon="solar:grid-linear" className="w-4 h-4" />} label="Kanban" />
+              <ViewButton mode="list" current={viewMode} onClick={setViewMode} icon={<Icon icon="solar:list-linear" className="w-4 h-4" />} label="List" />
+              <ViewButton mode="calendar" current={viewMode} onClick={setViewMode} icon={<Icon icon="solar:calendar-linear" className="w-4 h-4" />} label="Calendar" />
+              <ViewButton mode="table" current={viewMode} onClick={setViewMode} icon={<Icon icon="solar:table-linear" className="w-4 h-4" />} label="Table" />
             </div>
 
             <button className="flex items-center justify-center gap-2 px-3 md:px-4 py-2 bg-accent text-bg-primary rounded-xl font-bold text-sm hover:scale-105 transition-transform active:scale-95 flex-shrink-0">
-              <Plus className="w-4 h-4" />
+              <Icon icon="solar:add-circle-linear" className="w-4 h-4" />
               <span className="hidden sm:inline">New Task</span>
             </button>
           </div>
@@ -116,10 +115,10 @@ export default function TasksPage() {
         {(viewMode === 'table' || viewMode === 'timeline' || viewMode === 'gantt' || viewMode === 'cards') && (
           <Card className="flex flex-col items-center justify-center py-20 bg-surface border-border border-dashed">
             <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4">
-              {viewMode === 'table' ? <TableIcon className="w-8 h-8 text-accent" /> :
-               viewMode === 'timeline' ? <Clock className="w-8 h-8 text-accent" /> :
-               viewMode === 'gantt' ? <GanttChart className="w-8 h-8 text-accent" /> :
-               <CreditCard className="w-8 h-8 text-accent" />}
+              {viewMode === 'table' ? <Icon icon="solar:table-linear" className="w-8 h-8 text-accent" /> :
+               viewMode === 'timeline' ? <Icon icon="solar:clock-circle-linear" className="w-8 h-8 text-accent" /> :
+               viewMode === 'gantt' ? <Icon icon="solar:chart-line-linear" className="w-8 h-8 text-accent" /> :
+               <Icon icon="solar:credit-card-linear" className="w-8 h-8 text-accent" />}
             </div>
             <h3 className="text-lg font-bold text-text-primary capitalize">{viewMode} View</h3>
             <p className="text-sm text-text-secondary max-w-xs text-center mt-2">
@@ -161,7 +160,7 @@ function TaskListItem({ task }: { task: Task }) {
           <Badge variant="default" size="sm" className="capitalize text-[10px] py-0">{task.status.replace('_', ' ')}</Badge>
           {task.dueDate && (
             <span className="text-[10px] text-text-secondary flex items-center gap-1">
-              <Clock className="w-3 h-3" />
+              <Icon icon="solar:clock-circle-linear" className="w-3 h-3" />
               {task.dueDate.toLocaleDateString()}
             </span>
           )}

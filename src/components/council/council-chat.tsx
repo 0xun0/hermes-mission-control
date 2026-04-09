@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn, formatTime } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, User, Bot, Sparkles, Zap, Shield, MessageCircle } from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { useState, useRef, useEffect } from 'react';
 import { CouncilMessage, Agent } from '@/types';
 
@@ -82,7 +82,7 @@ export function CouncilChat() {
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center opacity-50">
             <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4">
-              <MessageCircle className="w-8 h-8 text-accent" />
+              <Icon icon="solar:chat-round-dots-linear" className="w-8 h-8 text-accent" />
             </div>
             <p className="text-lg font-medium text-text-primary">Start a Council Session</p>
             <p className="text-sm text-text-secondary max-w-xs">
@@ -113,10 +113,10 @@ export function CouncilChat() {
                       "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold",
                       isUser ? "bg-accent/20 text-accent" : "bg-surface border border-border"
                     )}>
-                      {isUser ? <User className="w-3 h-3" /> : (
-                        message.agentId === 'una' ? <Sparkles className="w-3 h-3 text-accent" /> :
-                        message.agentId === 'hermes-dev' ? <Zap className="w-3 h-3 text-accent" /> :
-                        <Shield className="w-3 h-3 text-accent" />
+                      {isUser ? <Icon icon="solar:user-linear" className="w-3 h-3" /> : (
+                        message.agentId === 'una' ? <Icon icon="solar:sparkles-linear" className="w-3 h-3 text-accent" /> :
+                        message.agentId === 'hermes-dev' ? <Icon icon="solar:lightning-linear" className="w-3 h-3 text-accent" /> :
+                        <Icon icon="solar:shield-check-linear" className="w-3 h-3 text-accent" />
                       )}
                     </div>
                     <span className="text-[10px] uppercase tracking-tighter text-text-secondary font-bold">
@@ -172,7 +172,7 @@ export function CouncilChat() {
             disabled={!inputValue.trim() || isLoading}
             className="w-12 h-12 rounded-xl"
           >
-            <Send className="w-5 h-5" />
+            <Icon icon="solar:send-linear" className="w-5 h-5" />
           </Button>
         </div>
       </div>

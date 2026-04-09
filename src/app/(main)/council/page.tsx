@@ -3,7 +3,7 @@
 import { useCouncilStore } from '@/lib/store/council-store';
 import { CouncilChat } from '@/components/council/council-chat';
 import { Card } from '@/components/ui/card';
-import { Users, Shield, Zap, Sparkles, Bot } from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { useEffect } from 'react';
 import { Agent } from '@/types';
 
@@ -46,7 +46,7 @@ export default function CouncilPage() {
         {/* Sidebar: Agents List */}
         <div className="w-full lg:w-64 flex flex-col gap-3 md:gap-4 flex-shrink-0">
           <div className="flex items-center gap-2 px-2">
-            <Users className="w-5 h-5 text-accent" />
+            <Icon icon="solar:users-group-rounded-linear" className="w-5 h-5 text-accent" />
             <h1 className="text-lg md:text-xl font-bold text-text-primary">Council</h1>
           </div>
           
@@ -59,11 +59,11 @@ export default function CouncilPage() {
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     {agent.id === 'una' ? (
-                      <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-accent" />
+                      <Icon icon="solar:sparkles-linear" className="w-4 h-4 md:w-5 md:h-5 text-accent" />
                     ) : agent.id === 'hermes-dev' ? (
-                      <Zap className="w-4 h-4 md:w-5 md:h-5 text-accent" />
+                      <Icon icon="solar:lightning-linear" className="w-4 h-4 md:w-5 md:h-5 text-accent" />
                     ) : (
-                      <Shield className="w-4 h-4 md:w-5 md:h-5 text-accent" />
+                      <Icon icon="solar:shield-check-linear" className="w-4 h-4 md:w-5 md:h-5 text-accent" />
                     )}
                   </div>
                   <div className="min-w-0">
@@ -75,7 +75,7 @@ export default function CouncilPage() {
             ))}
             
             <button className="flex items-center justify-center gap-2 p-3 rounded-[var(--radius-md)] border-2 border-dashed border-border text-text-secondary hover:text-text-primary hover:border-accent/30 transition-all text-sm flex-shrink-0 w-48 lg:w-auto h-[58px] lg:h-auto">
-              <Bot className="w-4 h-4" />
+              <Icon icon="solar:bot-linear" className="w-4 h-4" />
               <span>Add Agent</span>
             </button>
           </div>

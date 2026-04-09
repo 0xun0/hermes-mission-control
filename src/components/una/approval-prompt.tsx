@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Check, X } from 'lucide-react';
+import { Icon } from '@iconify/react';
 
 interface ApprovalPromptProps {
   id: string;
@@ -29,7 +29,7 @@ export function ApprovalPrompt({
     >
       {/* Header */}
       <div className="flex items-start gap-2 mb-2">
-        <AlertTriangle className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" />
+        <Icon icon="solar:danger-triangle-linear" className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-warning">{action}</p>
           <p className="text-xs text-text-secondary mt-0.5">{details}</p>
@@ -56,7 +56,7 @@ export function ApprovalPrompt({
           variant="primary"
           size="sm"
           onClick={() => onApprove(id)}
-          leftIcon={<Check className="w-3 h-3" />}
+          leftIcon={<Icon icon="solar:check-circle-linear" className="w-3 h-3" />}
           className="flex-1 bg-success hover:bg-success/90"
         >
           Approve
@@ -65,7 +65,7 @@ export function ApprovalPrompt({
           variant="ghost"
           size="sm"
           onClick={() => onDeny(id)}
-          leftIcon={<X className="w-3 h-3" />}
+          leftIcon={<Icon icon="solar:close-circle-linear" className="w-3 h-3" />}
         >
           Deny
         </Button>

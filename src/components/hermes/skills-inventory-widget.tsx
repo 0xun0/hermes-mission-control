@@ -10,7 +10,9 @@ interface SkillsInventoryWidgetProps {
 }
 
 export function SkillsInventoryWidget({ compact = true }: SkillsInventoryWidgetProps) {
-  const { skills, skillsLoading, fetchSkills } = useHermesStore();
+  const skills = useHermesStore(s => s.skills);
+const skillsLoading = useHermesStore(s => s.skillsLoading);
+const fetchSkills = useHermesStore(s => s.fetchSkills);;
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 

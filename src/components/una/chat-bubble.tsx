@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 import { formatRelative, formatTime } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { CheckCircle, AlertCircle, User, Bot } from 'lucide-react';
+import { Icon } from '@iconify/react';
 import type { UnaMessage as UnaMessageType } from '@/lib/store/una-store';
 
 interface ChatBubbleProps {
@@ -44,9 +44,9 @@ export function ChatBubble({ message, showAvatar = true }: ChatBubbleProps) {
           )}
         >
           {isUser ? (
-            <User className="w-3.5 h-3.5 text-accent" />
+            <Icon icon="solar:user-linear" className="w-3.5 h-3.5 text-accent" />
           ) : (
-            <Bot className="w-3.5 h-3.5 text-accent" />
+            <Icon icon="solar:bot-linear" className="w-3.5 h-3.5 text-accent" />
           )}
         </div>
       )}
@@ -76,7 +76,7 @@ export function ChatBubble({ message, showAvatar = true }: ChatBubbleProps) {
         {message.approvalNeeded && (
           <div className="mt-2 p-2 rounded-[var(--radius-sm)] bg-warning/10 border border-warning/30">
             <div className="flex items-center gap-1.5 text-warning text-xs font-medium">
-              <AlertCircle className="w-3 h-3" />
+              <Icon icon="solar:danger-circle-linear" className="w-3 h-3" />
               <span>Approval Required</span>
             </div>
             <p className="text-xs text-text-secondary mt-1">

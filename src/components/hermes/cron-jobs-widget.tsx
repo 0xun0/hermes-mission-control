@@ -6,7 +6,9 @@ import { useEffect } from 'react';
 import { cn, formatRelative } from '@/lib/utils';
 
 export function CronJobsWidget() {
-  const { cronJobs, cronsLoading, fetchCrons } = useHermesStore();
+  const cronJobs = useHermesStore(s => s.cronJobs);
+const cronsLoading = useHermesStore(s => s.cronsLoading);
+const fetchCrons = useHermesStore(s => s.fetchCrons);;
 
   useEffect(() => {
     fetchCrons();

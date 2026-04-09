@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { type HTMLAttributes, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -92,7 +92,7 @@ function ModalContent({
                 onClick={onClose}
                 className="p-1.5 rounded-[var(--radius-sm)] text-text-secondary hover:text-text-primary hover:bg-surface transition-colors"
               >
-                <X className="h-4 w-4" />
+                <Icon icon="solar:close-circle-linear" className="h-4 w-4" />
               </button>
             )}
           </div>
@@ -174,7 +174,7 @@ function ModalBottomSheet({
                 onClick={onClose}
                 className="p-1.5 rounded-[var(--radius-sm)] text-text-secondary hover:text-text-primary hover:bg-surface transition-colors"
               >
-                <X className="h-4 w-4" />
+                <Icon icon="solar:close-circle-linear" className="h-4 w-4" />
               </button>
             )}
           </div>

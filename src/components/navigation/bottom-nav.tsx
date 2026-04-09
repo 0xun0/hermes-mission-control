@@ -5,14 +5,17 @@ import { BOTTOM_NAV_ITEMS } from '@/types';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Home, CheckSquare, Calendar, Users, User } from 'lucide-react';
+import { Icon } from '@iconify/react';
 
-const iconMap: Record<string, typeof Home> = {
-  home: Home,
-  'check-square': CheckSquare,
-  calendar: Calendar,
-  users: Users,
-  user: User,
+const iconMap: Record<string, string> = {
+  home: 'solar:home-2-linear',
+  'check-square': 'solar:check-square-linear',
+  calendar: 'solar:calendar-linear',
+  users: 'solar:users-group-rounded-linear',
+  user: 'solar:user-linear',
+  tasks: 'solar:clipboard-list-linear',
+  council: 'solar:crown-star-linear',
+  profile: 'solar:user-circle-linear',
 };
 
 export function BottomNav() {
@@ -31,7 +34,7 @@ export function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden h-16 px-2 pb-safe bg-bg-primary/95 backdrop-blur-lg border-t border-border flex items-center justify-around">
       {BOTTOM_NAV_ITEMS.map((item) => {
-        const Icon = iconMap[item.icon] || Home;
+        const iconName = iconMap[item.icon] || 'solar:home-2-linear';
         const isActive = activeTab === item.id || pathname?.startsWith(item.href);
 
         return (
@@ -46,7 +49,7 @@ export function BottomNav() {
             )}
           >
             <div className="relative">
-              <Icon className="w-5 h-5" />
+              <Icon icon={iconName} className="w-5 h-5" />
               {isActive && (
                 <motion.div
                   layoutId="bottomNavActive"

@@ -6,7 +6,9 @@ import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 export function HermesGoalsWidget() {
-  const { goals, goalsLoading, fetchGoals } = useHermesStore();
+  const goals = useHermesStore(s => s.goals);
+const goalsLoading = useHermesStore(s => s.goalsLoading);
+const fetchGoals = useHermesStore(s => s.fetchGoals);;
 
   useEffect(() => {
     fetchGoals();

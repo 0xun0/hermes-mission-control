@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
-import { Send, X, MessageCircle, Sparkles } from 'lucide-react';
+import { Icon } from '@iconify/react';
 
 export function ChatPanel() {
   const {
@@ -123,7 +123,7 @@ export function ChatPanel() {
               <div className="flex items-center justify-between p-4 border-b border-border">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-accent" />
+                    <Icon icon="solar:sparkles-linear" className="w-5 h-5 text-accent" />
                   </div>
                   <div>
                     <p className="text-base font-semibold text-text-primary">Una</p>
@@ -134,7 +134,7 @@ export function ChatPanel() {
                   onClick={() => setPanelOpen(false)}
                   className="p-2 rounded-full bg-surface text-text-secondary hover:text-text-primary"
                 >
-                  <X className="w-5 h-5" />
+                  <Icon icon="solar:close-circle-linear" className="w-5 h-5" />
                 </button>
               </div>
 
@@ -143,7 +143,7 @@ export function ChatPanel() {
                 {messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center py-10">
                     <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mb-6">
-                      <MessageCircle className="w-10 h-10 text-accent" />
+                      <Icon icon="solar:chat-round-dots-linear" className="w-10 h-10 text-accent" />
                     </div>
                     <p className="text-lg font-bold text-text-primary mb-2">Welcome to Una</p>
                     <p className="text-sm text-text-secondary max-w-[250px]">
@@ -201,7 +201,7 @@ export function ChatPanel() {
                     loading={isLoading}
                     className="h-12 w-12 rounded-2xl p-0 flex items-center justify-center"
                   >
-                    <Send className="w-5 h-5" />
+                    <Icon icon="solar:send-linear" className="w-5 h-5" />
                   </Button>
                 </div>
               </div>
@@ -217,7 +217,7 @@ export function ChatPanel() {
           <div className="flex items-center justify-between p-4 border-b border-border">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-accent" />
+                <Icon icon="solar:sparkles-linear" className="w-4 h-4 text-accent" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-text-primary">Una</p>
@@ -228,7 +228,7 @@ export function ChatPanel() {
               onClick={() => setPanelOpen(false)}
               className="p-1.5 rounded-[var(--radius-sm)] text-text-secondary hover:text-text-primary hover:bg-surface transition-colors"
             >
-              <X className="w-4 h-4" />
+              <Icon icon="solar:close-circle-linear" className="w-4 h-4" />
             </button>
           </div>
 
@@ -237,7 +237,7 @@ export function ChatPanel() {
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4">
-                  <MessageCircle className="w-8 h-8 text-accent" />
+                  <Icon icon="solar:chat-round-dots-linear" className="w-8 h-8 text-accent" />
                 </div>
                 <p className="text-sm font-medium text-text-primary mb-1">Welcome to Una</p>
                 <p className="text-xs text-text-secondary max-w-[200px]">
@@ -293,7 +293,7 @@ export function ChatPanel() {
                 onClick={handleSend}
                 disabled={!inputValue.trim() || isLoading}
                 loading={isLoading}
-                leftIcon={<Send className="w-3 h-3" />}
+                leftIcon={<Icon icon="solar:send-linear" className="w-3 h-3" />}
               >
                 Send
               </Button>

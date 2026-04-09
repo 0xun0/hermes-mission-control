@@ -6,7 +6,11 @@ import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 export function SystemStatusWidget() {
-  const { systemStatus, gateway, platforms, activeModel, fetchStatus } = useHermesStore();
+  const systemStatus = useHermesStore(s => s.systemStatus);
+const gateway = useHermesStore(s => s.gateway);
+const platforms = useHermesStore(s => s.platforms);
+const activeModel = useHermesStore(s => s.activeModel);
+const fetchStatus = useHermesStore(s => s.fetchStatus);;
 
   useEffect(() => {
     fetchStatus();

@@ -5,7 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Task } from '@/types';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, CheckCircle2, Circle, MoreVertical } from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -71,7 +71,7 @@ export function TaskCard({ task }: TaskCardProps) {
             {task.title}
           </h4>
           <button className="text-text-secondary hover:text-text-primary">
-            <MoreVertical size={16} />
+            <Icon icon="solar:menu-dots-vertical-linear" width={16} />
           </button>
         </div>
 
@@ -88,14 +88,14 @@ export function TaskCard({ task }: TaskCardProps) {
           
           {task.dueDate && (
             <div className="flex items-center gap-1 text-[10px] text-text-secondary">
-              <Calendar size={12} />
+              <Icon icon="solar:calendar-linear" width={12} />
               <span>{format(new Date(task.dueDate), 'MMM d')}</span>
             </div>
           )}
 
           {task.subtasks && task.subtasks.length > 0 && (
             <div className="flex items-center gap-1 text-[10px] text-text-secondary">
-              <CheckCircle2 size={12} />
+              <Icon icon="solar:check-circle-bold" width={12} />
               <span>
                 {task.subtasks.filter(s => s.completed).length}/{task.subtasks.length}
               </span>

@@ -4,7 +4,7 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useDroppable } from '@dnd-kit/core';
 import { Task, KanbanColumn as KanbanColumnType } from '@/types';
 import { TaskCard } from './task-card';
-import { Plus } from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { cn } from '@/lib/utils';
 
 interface KanbanColumnProps {
@@ -35,7 +35,7 @@ export function KanbanColumn({ column, tasks }: KanbanColumnProps) {
           </span>
         </div>
         <button className="text-text-secondary hover:text-text-primary hover:bg-surface p-1 rounded transition-colors">
-          <Plus size={16} />
+          <Icon icon="solar:add-circle-linear" width={16} />
         </button>
       </div>
 
