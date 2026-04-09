@@ -1,26 +1,278 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ==========================================
+   HERMES MISSION CONTROL — DESIGN SYSTEM
+   Original neumorphic dark design
+   ========================================== */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg-body: #000000;
+  --color-bg-main: #11141a;
+  --color-bg-surface: #0c0e12;
+  --color-bg-card-from: #2a303c;
+  --color-bg-card-to: #15181e;
+  --color-bg-hover: #161920;
+  --color-border-subtle: rgba(51, 58, 71, 0.2);
+  --color-border-card: rgba(51, 58, 71, 0.4);
+  --color-border-btn: rgba(71, 82, 102, 0.3);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ==========================================
+   BASE STYLES
+   ========================================== */
+* {
+  box-sizing: border-box;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html, body {
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  background: #000000;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide all scrollbars — app-like UI */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth touch scrolling for kanban */
+.touch-scroll-x {
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+
+/* Text selection */
+::selection {
+  background: rgb(249, 115, 22);
+  color: #000000;
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid rgb(249, 115, 22);
+  outline-offset: 2px;
+}
+
+/* ==========================================
+   NEUMORPHIC DESIGN TOKENS (as classes)
+   ========================================== */
+
+/* Inset surface — search bars, inputs */
+.neu-inset {
+  background: #0c0e12;
+  box-shadow:
+    inset 3px 3px 8px rgba(0, 0, 0, 0.9),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.03);
+  border: 1px solid #000000;
+}
+
+/* Raised button */
+.neu-raised {
+  background: linear-gradient(to bottom, #2a303c, #1e222a);
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.6),
+    inset 0 1px 2px rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(71, 82, 102, 0.3);
+}
+
+.neu-raised:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    inset 0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+/* Card style */
+.neu-card {
+  background: linear-gradient(to bottom right, #2a303c, #15181e);
+  box-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.6),
+    -1px -1px 3px rgba(255, 255, 255, 0.02),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(51, 58, 71, 0.4);
+}
+
+.neu-card:hover {
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+/* Active sidebar nav item */
+.neu-active {
+  background: #0c0e12;
+  box-shadow:
+    inset 2px 2px 6px rgba(0, 0, 0, 0.9),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.02);
+  border: 1px solid #000000;
+}
+
+/* Column container */
+.neu-column {
+  background: rgba(12, 14, 18, 0.6);
+  box-shadow:
+    inset 4px 4px 10px rgba(0, 0, 0, 0.6),
+    inset -1px -1px 4px rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+/* Orange glow */
+.glow-orange {
+  filter: drop-shadow(0 0 5px rgba(249, 115, 22, 0.8));
+}
+
+/* Neon accent dot */
+.dot-orange {
+  background: rgb(249, 115, 22);
+  box-shadow: 0 0 5px rgba(249, 115, 22, 0.8);
+}
+
+/* Progress bar track */
+.progress-track {
+  background: #0a0c0f;
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.9),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+}
+
+/* Progress bar fill */
+.progress-fill {
+  background: linear-gradient(to right, rgb(234, 88, 12), rgb(251, 146, 60));
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+}
+
+/* ==========================================
+   ANIMATIONS
+   ========================================== */
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.skeleton {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, #0c0e12 0%, #1a1d24 50%, #0c0e12 100%);
+  background-size: 200% 100%;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out forwards;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+  50% { box-shadow: 0 0 20px 4px rgba(249, 115, 22, 0.3); }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Divider */
+.divider {
+  border-top: 1px solid rgba(51, 58, 71, 0.2);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+}
+
+/* ==========================================
+   RESPONSIVE UTILITIES
+   ========================================== */
+@media (max-width: 767px) {
+  .hide-mobile { display: none !important; }
+}
+@media (min-width: 768px) {
+  .hide-desktop { display: none !important; }
+}
+
+/* ==========================================
+   ADDED MICRO-ANIMATIONS & PHYSICS
+   ========================================== */
+
+/* Card Physics */
+.neu-card {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.neu-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow:
+    6px 8px 16px rgba(0, 0, 0, 0.8),
+    -1px -1px 4px rgba(255, 255, 255, 0.03),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.8);
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+/* Button Physics */
+.neu-raised, .neu-inset {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.neu-raised:hover {
+  filter: brightness(1.1);
+}
+.neu-raised:active {
+  transform: translateY(2px) scale(0.97);
+}
+
+.neu-inset:hover {
+  box-shadow:
+    inset 4px 4px 10px rgba(0, 0, 0, 0.95),
+    inset -1px -1px 5px rgba(255, 255, 255, 0.06);
+}
+.neu-inset:active {
+  transform: scale(0.98);
+}
+
+/* Staggered Entry Animations */
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+.stagger-6 { animation-delay: 300ms; }
+
+/* Subtle idle floating pulse for primary accents */
+@keyframes float-pulse {
+  0%, 100% { transform: translateY(0); box-shadow: 0 0 5px rgba(249, 115, 22, 0.6); }
+  50% { transform: translateY(-2px); box-shadow: 0 0 12px rgba(249, 115, 22, 0.9); }
+}
+.animate-float-pulse {
+  animation: float-pulse 3s ease-in-out infinite;
 }

@@ -1,0 +1,10 @@
+{
+  "publishes": {
+    "hollow-cipher-fz7c": {
+      "siteUrl": "https://hollow-cipher-fz7c.here.now/",
+      "claimToken": "2090677c03d9cb4047c8151fd90c1e3e386de8aa8b4afacb933cdf07da6eba9f",
+      "claimUrl": "https://here.now/claim?slug=hollow-cipher-fz7c&token=2090677c03d9cb4047c8151fd90c1e3e386de8aa8b4afacb933cdf07da6eba9f",
+      "expiresAt": "2026-04-08T07:36:58.945Z"
+    }
+  }
+}

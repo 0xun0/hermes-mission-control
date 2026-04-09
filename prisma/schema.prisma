@@ -1,0 +1,587 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────
+// USER & AUTH
+// ──────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  avatarUrl    String?
+  timezone     String   @default("Europe/Zagreb")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  settings         UserSettings?
+  instances        Instance[]
+  unaConversations UnaConversation[]
+  councils         CouncilMembership[]
+}
+
+// ──────────────────────────────────────────────
+// USER SETTINGS
+// ──────────────────────────────────────────────
+
+model UserSettings {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Appearance
+  instanceAnimationEnabled Boolean @default(true)
+  theme                    String  @default("system") // system | light | dark
+  sidebarCollapsed         Boolean @default(false)
+
+  // Notifications
+  pushEnabled        Boolean @default(true)
+  emailEnabled       Boolean @default(false)
+  notifyTaskAssigned Boolean @default(true)
+  notifyGoalUpdate   Boolean @default(true)
+
+  // Hermes integration
+  hermesGatewayUrl  String? // e.g. http://100.122.147.84:8644
+  hermesApiKey      String?
+  hermesSyncEnabled Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// INSTANCES (Personal Life, Personal Brand, Business)
+// ──────────────────────────────────────────────
+
+model Instance {
+  id     String      @id @default(cuid())
+  userId String
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  key    InstanceKey @unique // personal | brand | business
+
+  // Theme (CSS variables stored as JSON)
+  theme Json?
+
+  // Instance-specific data
+  data Json @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks          Task[]
+  calendarEvents CalendarEvent[]
+  goals          Goal[]
+  contacts       Contact[]
+  deals          Deal[]
+  projects       Project[]
+  habits         Habit[]
+  meals          MealPlan[]
+  groceries      GroceryItem[]
+  journalEntries JournalEntry[]
+
+  @@unique([userId, key])
+}
+
+enum InstanceKey {
+  personal
+  brand
+  business
+}
+
+// ──────────────────────────────────────────────
+// TASKS
+// ──────────────────────────────────────────────
+
+model Task {
+  id         String   @id @default(cuid())
+  instanceId String
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  status      TaskStatus @default(todo)
+  priority    Priority   @default(medium)
+
+  // Kanban columns per instance type
+  // Personal: todo, in_progress, review, done
+  // Brand: ideation, creating, scheduling, published
+  // Business: backlog, sprint, in_dev, done, blocked
+  column String @default("todo")
+
+  dueDate     DateTime?
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  // Linking
+  goalId       String?
+  goal         Goal?    @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  projectId    String?
+  project      Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  parentTaskId String?
+  parentTask   Task?    @relation("SubTasks", fields: [parentTaskId], references: [id], onDelete: Cascade)
+  subTasks     Task[]   @relation("SubTasks")
+
+  // Meta
+  tags           String[]        @default([])
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  order          Int             @default(0)
+  calendarEvents CalendarEvent[]
+}
+
+enum TaskStatus {
+  todo
+  in_progress
+  review
+  blocked
+  done
+}
+
+enum Priority {
+  low
+  medium
+  high
+  urgent
+}
+
+// ──────────────────────────────────────────────
+// CALENDAR
+// ──────────────────────────────────────────────
+
+model CalendarEvent {
+  id         String   @id @default(cuid())
+  instanceId String
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  allDay      Boolean   @default(false)
+  location    String?
+
+  // Recurrence
+  recurrence String? // RRULE string
+
+  // Linking
+  taskId String?
+  task   Task?   @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  goalId String?
+  goal   Goal?   @relation(fields: [goalId], references: [id], onDelete: SetNull)
+
+  // Meta
+  color     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// GOALS
+// ──────────────────────────────────────────────
+
+model Goal {
+  id         String   @id @default(cuid())
+  instanceId String
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  progress    Int        @default(0) // 0-100
+  status      GoalStatus @default(active)
+  deadline    DateTime?
+
+  // Hierarchy
+  parentGoalId String?
+  parentGoal   Goal?   @relation("SubGoals", fields: [parentGoalId], references: [id], onDelete: Cascade)
+  subGoals     Goal[]  @relation("SubGoals")
+
+  // Milestones
+  milestones Milestone[]
+
+  // Meta
+  tags           String[]        @default([])
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  tasks          Task[]
+  calendarEvents CalendarEvent[]
+}
+
+enum GoalStatus {
+  active
+  paused
+  completed
+  abandoned
+}
+
+model Milestone {
+  id     String @id @default(cuid())
+  goalId String
+  goal   Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  title     String
+  done      Boolean   @default(false)
+  dueDate   DateTime?
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+}
+
+// ──────────────────────────────────────────────
+// HABITS
+// ──────────────────────────────────────────────
+
+model Habit {
+  id         String   @id @default(cuid())
+  instanceId String
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  frequency   HabitFrequency @default(daily)
+  targetDays  Int[]          @default([]) // 0=Sun, 1=Mon, etc.
+  targetCount Int            @default(1) // e.g. 8 glasses of water
+
+  // Tracking
+  entries HabitEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum HabitFrequency {
+  daily
+  weekly
+  custom
+}
+
+model HabitEntry {
+  id      String @id @default(cuid())
+  habitId String
+  habit   Habit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  date  DateTime
+  count Int      @default(1)
+  note  String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([habitId, date])
+}
+
+// ──────────────────────────────────────────────
+// MEAL PLANNING
+// ──────────────────────────────────────────────
+
+model MealPlan {
+  id         String   @id @default(cuid())
+  instanceId String
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  date        DateTime
+  mealType    MealType
+  title       String
+  description String?
+  calories    Int?
+  protein     Int?
+  carbs       Int?
+  fat         Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([instanceId, date, mealType])
+}
+
+enum MealType {
+  breakfast
+  lunch
+  dinner
+  snack
+}
+
+model GroceryItem {
+  id         String   @id @default(cuid())
+  instanceId String
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  title    String
+  quantity String?
+  unit     String?
+  category String?
+  checked  Boolean @default(false)
+  notes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// CRM
+// ──────────────────────────────────────────────
+
+model Contact {
+  id         String   @id @default(cuid())
+  instanceId String
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  name      String
+  email     String?
+  phone     String?
+  company   String?
+  role      String?
+  website   String?
+  linkedin  String?
+  twitter   String?
+  avatarUrl String?
+  notes     String?
+
+  // Custom fields stored as JSON
+  customFields Json @default("{}")
+
+  // Relations
+  deals Deal[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Deal {
+  id         String   @id @default(cuid())
+  instanceId String
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  title       String
+  value       Float?
+  currency    String    @default("EUR")
+  stage       DealStage @default(lead)
+  probability Int       @default(10)
+  closedDate  DateTime?
+  lostReason  String?
+
+  activities DealActivity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum DealStage {
+  lead
+  qualified
+  proposal
+  negotiation
+  won
+  lost
+}
+
+model DealActivity {
+  id     String @id @default(cuid())
+  dealId String
+  deal   Deal   @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  type      ActivityType
+  content   String
+  createdAt DateTime     @default(now())
+}
+
+enum ActivityType {
+  note
+  call
+  email
+  meeting
+  demo
+}
+
+// ──────────────────────────────────────────────
+// PROJECTS
+// ──────────────────────────────────────────────
+
+model Project {
+  id         String   @id @default(cuid())
+  instanceId String
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  status      ProjectStatus @default(active)
+  startDate   DateTime?
+  endDate     DateTime?
+
+  tasks Task[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ProjectStatus {
+  planning
+  active
+  on_hold
+  completed
+  cancelled
+}
+
+// ──────────────────────────────────────────────
+// JOURNAL
+// ──────────────────────────────────────────────
+
+model JournalEntry {
+  id         String   @id @default(cuid())
+  instanceId String
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  date    DateTime
+  mood    String? // 1-5 scale or custom labels
+  energy  String? // 1-5 scale
+  content String // Markdown content
+  tags    String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// KNOWLEDGE BASE
+// ──────────────────────────────────────────────
+
+model KnowledgeDoc {
+  id     String @id @default(cuid())
+  userId String // Not instance-scoped — cross-instance knowledge
+
+  title   String
+  content String // Markdown
+  summary String?
+  tags    String[] @default([])
+
+  instanceKey InstanceKey? // null = cross-instance
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// UNA (Chatbot)
+// ──────────────────────────────────────────────
+
+model UnaConversation {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String?
+  instanceKey InstanceKey? // context of conversation
+
+  messages UnaMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UnaMessage {
+  id             String          @id @default(cuid())
+  conversationId String
+  conversation   UnaConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  role     MessageRole
+  content  String
+  metadata Json? // tools_used, approval_needed, etc.
+
+  createdAt DateTime @default(now())
+}
+
+enum MessageRole {
+  user
+  assistant
+  system
+}
+
+// ──────────────────────────────────────────────
+// COUNCIL (Multi-Agent Chat)
+// ──────────────────────────────────────────────
+
+model Council {
+  id String @id @default(cuid())
+
+  name        String
+  description String?
+
+  members  CouncilMembership[]
+  messages CouncilMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CouncilMembership {
+  id        String     @id @default(cuid())
+  councilId String
+  council   Council    @relation(fields: [councilId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      MemberRole @default(member)
+
+  joinedAt DateTime @default(now())
+
+  @@unique([councilId, userId])
+}
+
+enum MemberRole {
+  owner
+  admin
+  member
+  viewer
+}
+
+model CouncilMessage {
+  id        String  @id @default(cuid())
+  councilId String
+  council   Council @relation(fields: [councilId], references: [id], onDelete: Cascade)
+
+  senderId   String // Agent ID or user ID
+  senderName String
+  senderRole String // "una" | "agent" | "user"
+  avatarUrl  String?
+  content    String
+  metadata   Json? // session_id, tools_used, etc.
+
+  createdAt DateTime @default(now())
+}
+
+// ──────────────────────────────────────────────
+// SYNC LOG
+// ──────────────────────────────────────────────
+
+model SyncLog {
+  id         String        @id @default(cuid())
+  direction  SyncDirection
+  entityType String
+  entityId   String
+  payload    Json
+  status     SyncStatus    @default(pending)
+  error      String?
+  createdAt  DateTime      @default(now())
+}
+
+enum SyncDirection {
+  to_local
+  from_local
+  to_hermes
+  from_hermes
+}
+
+enum SyncStatus {
+  pending
+  success
+  failed
+}

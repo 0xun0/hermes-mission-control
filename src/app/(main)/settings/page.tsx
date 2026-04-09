@@ -1,0 +1,101 @@
+'use client';
+
+import { useInstanceStore } from '@/lib/store/instance-store';
+import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
+import { Settings, Bell, Shield, Smartphone, Globe, ExternalLink, Moon, Sun, Monitor } from 'lucide-react';
+import Link from 'next/link';
+
+export default function SettingsPage() {
+  const { animationEnabled, toggleAnimation } = useInstanceStore();
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 pb-20 md:pb-10">
+      <div className="flex items-center gap-3 px-2">
+        <Settings className="w-5 h-5 md:w-6 md:h-6 text-accent" />
+        <h1 className="text-xl md:text-2xl font-bold text-text-primary">Settings</h1>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        {/* Navigation */}
+        <div className="md:col-span-1 flex flex-row md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+          <button className="flex-shrink-0 flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl bg-accent/10 text-accent font-medium text-sm">
+            <Monitor className="w-4 h-4" />
+            <span>Appearance</span>
+          </button>
+          <button className="flex-shrink-0 flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-text-secondary hover:bg-surface hover:text-text-primary transition-colors font-medium text-sm">
+            <Bell className="w-4 h-4" />
+            <span>Notifications</span>
+          </button>
+          <button className="flex-shrink-0 flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-text-secondary hover:bg-surface hover:text-text-primary transition-colors font-medium text-sm">
+            <Shield className="w-4 h-4" />
+            <span>Privacy</span>
+          </button>
+          <button className="flex-shrink-0 flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-text-secondary hover:bg-surface hover:text-text-primary transition-colors font-medium text-sm">
+            <Smartphone className="w-4 h-4" />
+            <span>Devices</span>
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="md:col-span-2 space-y-6 md:space-y-8">
+          <section className="space-y-3 md:space-y-4">
+            <h2 className="text-[10px] md:text-xs font-semibold text-text-secondary uppercase tracking-widest px-2">Interface</h2>
+            <Card className="p-0 overflow-hidden bg-surface border-border">
+              <div className="p-4 md:p-5 flex items-center justify-between border-b border-border/50 gap-4">
+                <div className="space-y-0.5">
+                  <p className="text-sm md:text-base font-medium text-text-primary">Instance Transitions</p>
+                  <p className="text-xs text-text-secondary">Enable smooth 600ms portal animations when switching instances.</p>
+                </div>
+                <Switch 
+                  checked={animationEnabled} 
+                  onCheckedChange={toggleAnimation} 
+                />
+              </div>
+              <div className="p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between border-b border-border/50 gap-4">
+                <div className="space-y-0.5">
+                  <p className="text-sm md:text-base font-medium text-text-primary">Theme Mode</p>
+                  <p className="text-xs text-text-secondary">Choose your preferred visual style.</p>
+                </div>
+                <div className="flex bg-bg-secondary p-1 rounded-lg border border-border self-start sm:self-auto">
+                  <button className="p-1.5 md:p-2 rounded-md text-text-secondary hover:text-text-primary transition-colors"><Sun className="w-4 h-4" /></button>
+                  <button className="p-1.5 md:p-2 rounded-md bg-surface text-accent shadow-sm border border-border"><Moon className="w-4 h-4" /></button>
+                  <button className="p-1.5 md:p-2 rounded-md text-text-secondary hover:text-text-primary transition-colors"><Monitor className="w-4 h-4" /></button>
+                </div>
+              </div>
+              <div className="p-4 md:p-5 flex items-center justify-between gap-4">
+                <div className="space-y-0.5">
+                  <p className="text-sm md:text-base font-medium text-text-primary">Compact Sidebar</p>
+                  <p className="text-xs text-text-secondary">Show only icons in the sidebar by default.</p>
+                </div>
+                <Switch checked={false} />
+              </div>
+            </Card>
+          </section>
+
+          <section className="space-y-3 md:space-y-4">
+            <h2 className="text-[10px] md:text-xs font-semibold text-text-secondary uppercase tracking-widest px-2">Advanced</h2>
+            <Card className="p-5 md:p-6 bg-surface border-border border-dashed">
+              <div className="flex flex-col gap-4">
+                <div>
+                  <p className="text-sm md:text-base font-medium text-text-primary mb-1">Hermes Gateway</p>
+                  <p className="text-xs text-text-secondary leading-relaxed">
+                    Configure advanced agent behaviors, custom skills, and long-running cron jobs directly in the native Hermes dashboard.
+                  </p>
+                </div>
+                <Link 
+                  href="http://100.122.147.84:8644" 
+                  target="_blank"
+                  className="w-full flex items-center justify-center gap-2 h-11 px-4 text-sm font-bold rounded-[var(--radius-md)] border border-accent text-accent hover:bg-accent/10 transition-all active:scale-[0.98]"
+                >
+                  <span>Open Hermes Native Dashboard</span>
+                  <ExternalLink className="w-4 h-4" />
+                </Link>
+              </div>
+            </Card>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+}
