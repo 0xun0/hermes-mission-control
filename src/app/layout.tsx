@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Hermes Mission Control',
-  description: 'AI Agent Command Center',
+  title: 'UNOX — Personal Operating System',
+  description: 'Sovereign personal OS — merger portal between Bruno & Una',
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',

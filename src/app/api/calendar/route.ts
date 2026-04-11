@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth';
-import { InstanceType } from '@/types';
+import { InstanceKey } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const user = session.user as SessionUser;
-  const instanceKey = req.nextUrl.searchParams.get('instance') as InstanceType;
+  const instanceKey = req.nextUrl.searchParams.get('instance') as InstanceKey;
 
   try {
     const events = await prisma.calendarEvent.findMany({

@@ -22,7 +22,7 @@ export function ActivitySidebar({ isOpen, onClose }: ActivitySidebarProps) {
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 right-0 transform transition-transform duration-300 ease-in-out',
+        'focus-hideable fixed inset-y-0 right-0 transform transition-transform duration-300 ease-in-out',
         'w-80 h-full flex flex-col',
         'bg-[#0c0e12] border-l border-black',
         'shadow-[inset_5px_0_15px_rgba(0,0,0,0.8)] z-50',
