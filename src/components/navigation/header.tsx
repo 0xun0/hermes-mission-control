@@ -33,23 +33,36 @@ export function TopHeader({ onToggleActivity }: TopHeaderProps) {
   const badge = realmBadge[realm];
 
   return (
-    <header className="h-20 px-4 md:px-8 flex items-center justify-between border-b border-[#333a47]/20 shadow-[0_1px_10px_rgba(0,0,0,0.5)] relative z-10 bg-[#11141a]/80 backdrop-blur-md shrink-0">
-      <div className="flex items-center gap-3 flex-1 sm:flex-none">
-        {/* Command Bar Trigger (replaces basic search) */}
-        <button
-          onClick={openCommandBar}
-          className="flex relative flex-1 max-w-[12rem] sm:max-w-xs lg:max-w-md h-10 rounded-xl neu-inset items-center px-4 cursor-pointer hover:border-[#333a47]/60 transition-colors"
-        >
-          <Icon icon="solar:magnifer-linear" className="text-slate-500 shrink-0" width={16} />
-          <span className="text-sm text-slate-600 ml-2 md:ml-3 font-medium">Search or command...</span>
-          <div className="hidden sm:flex ml-auto px-1.5 py-0.5 rounded items-center justify-center bg-[#1a1d24] shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.05)] border border-[#333a47]/40 text-[10px] text-slate-500 font-mono shrink-0">
-            ⌘K
-          </div>
-        </button>
+    <header className={cn(
+      'px-4 md:px-8 flex items-center justify-between border-[#333a47]/20 shadow-[0_1px_10px_rgba(0,0,0,0.5)] relative z-10 bg-[#11141a]/80 backdrop-blur-md shrink-0',
+      // Desktop: top header with border-b, normal height
+      'lg:h-20 lg:border-b lg:flex-row',
+      // Mobile: bottom header with border-t, sticky positioning, compact height
+      'lg:static fixed lg:relative bottom-0 left-0 right-0 lg:top-auto top-auto h-16 border-t lg:border-t-0 sticky'
+    )}>
+      <div className={cn(
+        'flex items-center gap-3 flex-1',
+        'lg:flex-none lg:max-w-none',
+        'max-w-full'
+      )}>
+        {/* Message to Agent Input (mobile) / Search (desktop) */}
+        <input
+          type="text"
+          placeholder="Send a message to agent..."
+          className={cn(
+            'flex relative flex-1 h-10 rounded-xl neu-inset items-center px-4 cursor-pointer hover:border-[#333a47]/60 transition-colors outline-none',
+            'text-sm text-slate-300 placeholder-slate-600 bg-transparent',
+            'lg:max-w-md'
+          )}
+        />
       </div>
 
       {/* Right Header Actions */}
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-3">
+      <div className={cn(
+        'flex items-center gap-2 sm:gap-3 shrink-0 ml-3',
+        // Hide most actions on mobile (bottom header is compact)
+        'lg:flex hidden lg:gap-3'
+      )}>
         {/* Realm Badge */}
         <div className={cn(
           'hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium',
@@ -95,20 +108,23 @@ export function TopHeader({ onToggleActivity }: TopHeaderProps) {
         <button className="hidden md:flex w-10 h-10 rounded-xl neu-raised items-center justify-center text-slate-400 hover:text-orange-400 transition-all">
           <Icon icon="solar:refresh-linear" width={20} />
         </button>
+      </div>
 
-        {/* Mobile-only Activity Toggle */}
+      {/* Mobile-only Actions (always visible on mobile bottom header) */}
+      <div className="flex lg:hidden items-center gap-2 shrink-0 ml-auto">
+        {/* Mobile Activity Toggle */}
         <button
           onClick={onToggleActivity}
-          className="xl:hidden w-10 h-10 rounded-xl neu-inset flex items-center justify-center text-orange-500 active:translate-y-px transition-all relative overflow-hidden"
+          className="w-10 h-10 rounded-xl neu-inset flex items-center justify-center text-orange-500 active:translate-y-px transition-all relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-orange-500/10 mix-blend-overlay" />
           <Icon icon="solar:history-linear" width={20} className="relative z-10" />
         </button>
 
-        {/* Mobile Menu Button — right side */}
+        {/* Mobile Menu Button */}
         <button
           onClick={() => setSidebarOpen(true)}
-          className="lg:hidden neu-raised w-10 h-10 rounded-xl flex items-center justify-center text-slate-300 active:translate-y-px shrink-0"
+          className="neu-raised w-10 h-10 rounded-xl flex items-center justify-center text-slate-300 active:translate-y-px shrink-0"
         >
           <Icon icon="solar:hamburger-menu-linear" width={20} />
         </button>
