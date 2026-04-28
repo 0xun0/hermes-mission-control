@@ -7,7 +7,6 @@ import { ActivitySidebar } from '@/components/navigation/activity-sidebar';
 import { UnaOrb } from '@/components/una/una-orb';
 import { CommandBar } from '@/components/command-bar/command-bar';
 import { SoundscapeController } from '@/components/ambient/soundscape-controller';
-import { BottomNav } from '@/components/navigation/bottom-nav';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
@@ -93,14 +92,19 @@ export function AppShell({ children }: AppShellProps) {
       {/* Main Dashboard Area */}
       <main className="flex-1 flex flex-col h-full relative bg-gradient-to-br from-[#1a1d24] via-[#11141a] to-[#0a0c0f] min-w-0">
 
-        {/* Top Header */}
-        <div className="focus-dimmable">
+        {/* Desktop Header (top position) */}
+        <div className="focus-dimmable hidden lg:block">
           <TopHeader onToggleActivity={() => setMobileActivityOpen(!isMobileActivityOpen)} />
         </div>
 
         {/* Scrollable Content Area */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 pb-20 lg:pb-8 flex flex-col gap-6 md:gap-8 relative z-10">
           {children}
+        </div>
+
+        {/* Mobile Header (bottom position - fixed) */}
+        <div className="focus-dimmable lg:hidden">
+          <TopHeader onToggleActivity={() => setMobileActivityOpen(!isMobileActivityOpen)} />
         </div>
       </main>
 
@@ -120,9 +124,6 @@ export function AppShell({ children }: AppShellProps) {
 
       {/* Omnipresent: Soundscapes */}
       <SoundscapeController />
-
-      {/* Mobile Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 }
