@@ -7,6 +7,9 @@ export interface InstanceState {
   sidebarCollapsed: boolean;
   isSidebarOpen: boolean;
 
+  // Activity Sidebar (desktop)
+  isActivityOpen: boolean;
+
   // Focus Mode
   focusModeActive: boolean;
 
@@ -20,6 +23,8 @@ export interface InstanceState {
   toggleSidebar: () => void;
   setSidebarOpen: (isOpen: boolean) => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
+  setActivityOpen: (isOpen: boolean) => void;
+  toggleActivityOpen: () => void;
   toggleFocusMode: () => void;
   setFocusMode: (active: boolean) => void;
   toggleAmbientSound: () => void;
@@ -32,6 +37,8 @@ export const useInstanceStore = create<InstanceState>((set) => ({
   sidebarCollapsed: false,
   isSidebarOpen: false,
 
+  isActivityOpen: true,
+
   focusModeActive: false,
 
   ambientSoundEnabled: false,
@@ -42,6 +49,8 @@ export const useInstanceStore = create<InstanceState>((set) => ({
   toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
   setSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),
   setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
+  setActivityOpen: (isOpen) => set({ isActivityOpen: isOpen }),
+  toggleActivityOpen: () => set((state) => ({ isActivityOpen: !state.isActivityOpen })),
   toggleFocusMode: () => set((state) => ({ focusModeActive: !state.focusModeActive })),
   setFocusMode: (active) => set({ focusModeActive: active }),
   toggleAmbientSound: () => set((state) => ({ ambientSoundEnabled: !state.ambientSoundEnabled })),

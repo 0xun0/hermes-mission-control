@@ -9,9 +9,11 @@ import { formatRelative } from '@/lib/utils';
 interface ActivitySidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  isDesktopOpen?: boolean;
+  onToggleDesktop?: () => void;
 }
 
-export function ActivitySidebar({ isOpen, onClose }: ActivitySidebarProps) {
+export function ActivitySidebar({ isOpen, onClose, isDesktopOpen = true, onToggleDesktop }: ActivitySidebarProps) {
   const { cronJobs, cronsLoading, fetchCrons, systemStatus, gateway, fetchStatus } = useHermesStore();
 
   useEffect(() => {
@@ -20,26 +22,52 @@ export function ActivitySidebar({ isOpen, onClose }: ActivitySidebarProps) {
   }, [fetchCrons, fetchStatus]);
 
   return (
-    <aside
-      className={cn(
-        'focus-hideable fixed inset-y-0 right-0 transform transition-transform duration-300 ease-in-out',
-        'w-80 h-full flex flex-col',
-        'bg-[#0c0e12] border-l border-black',
-        'shadow-[inset_5px_0_15px_rgba(0,0,0,0.8)] z-50',
-        'xl:relative xl:translate-x-0',
-        isOpen ? 'translate-x-0' : 'translate-x-full'
-      )}
-    >
-      {/* Header */}
-      <div className="h-20 flex items-center justify-between px-6 border-b border-[#333a47]/20 shadow-[0_1px_0_rgba(0,0,0,0.8)] shrink-0">
-        <h2 className="text-sm font-medium tracking-wide text-slate-300">Live Activity</h2>
+    <>
+      {/* Desktop re-open tab — visible only when sidebar is hidden on desktop */}
+      {!isDesktopOpen && onToggleDesktop && (
         <button
-          onClick={onClose}
-          className="xl:hidden text-slate-500 hover:text-white transition-colors p-2 -mr-2"
+          onClick={onToggleDesktop}
+          className="hidden xl:flex fixed right-0 top-1/2 -translate-y-1/2 z-40 w-6 h-16 bg-[#0c0e12] border border-black border-r-0 rounded-l-lg items-center justify-center text-slate-500 hover:text-orange-400 transition-colors shadow-[-2px_0_8px_rgba(0,0,0,0.6)]"
+          title="Show Live Activity"
         >
-          <Icon icon="solar:close-circle-linear" width={24} />
+          <Icon icon="solar:alt-arrow-left-linear" width={12} />
         </button>
-      </div>
+      )}
+      <aside
+        className={cn(
+          'focus-hideable fixed inset-y-0 right-0 transform transition-all duration-300 ease-in-out',
+          'w-80 h-full flex flex-col',
+          'bg-[#0c0e12] border-l border-black',
+          'shadow-[inset_5px_0_15px_rgba(0,0,0,0.8)] z-50',
+          // Desktop: respect isDesktopOpen
+          isDesktopOpen ? 'xl:relative xl:translate-x-0' : 'xl:hidden',
+          // Mobile: standard slide-in
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        )}
+      >
+        {/* Header */}
+        <div className="h-20 flex items-center justify-between px-6 border-b border-[#333a47]/20 shadow-[0_1px_0_rgba(0,0,0,0.8)] shrink-0">
+          <h2 className="text-sm font-medium tracking-wide text-slate-300">Live Activity</h2>
+          <div className="flex items-center gap-1">
+            {/* Desktop hide button */}
+            {onToggleDesktop && (
+              <button
+                onClick={onToggleDesktop}
+                className="hidden xl:flex w-8 h-8 rounded-lg items-center justify-center text-slate-600 hover:text-slate-300 hover:bg-[#1e222a] transition-all"
+                title="Hide Live Activity"
+              >
+                <Icon icon="solar:sidebar-minimalistic-linear" width={14} />
+              </button>
+            )}
+            {/* Mobile close button */}
+            <button
+              onClick={onClose}
+              className="xl:hidden text-slate-500 hover:text-white transition-colors p-2 -mr-2"
+            >
+              <Icon icon="solar:close-circle-linear" width={24} />
+            </button>
+          </div>
+        </div>
 
       {/* Activity Items */}
       <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
@@ -115,5 +143,6 @@ export function ActivitySidebar({ isOpen, onClose }: ActivitySidebarProps) {
         </div>
       </div>
     </aside>
+    </>
   );
 }

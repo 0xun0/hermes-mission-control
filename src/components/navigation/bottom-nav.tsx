@@ -37,7 +37,7 @@ export function BottomNav() {
   const activeTab = getActiveTab();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden h-16 px-2 bg-[#0c0e12]/95 backdrop-blur-lg border-t border-[#333a47]/20 flex items-center justify-around shadow-[0_-2px_10px_rgba(0,0,0,0.5)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden h-16 px-2 bg-[#0c0e12]/95 backdrop-blur-lg border-t border-[#333a47]/20 flex items-center justify-around shadow-[0_-2px_10px_rgba(0,0,0,0.5)]">
       {BOTTOM_NAV_ITEMS.map((item) => {
         const iconName = iconMap[item.icon] || 'solar:home-2-linear';
         const isActive = activeTab === item.id;

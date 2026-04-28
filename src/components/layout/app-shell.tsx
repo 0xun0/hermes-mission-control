@@ -7,6 +7,7 @@ import { ActivitySidebar } from '@/components/navigation/activity-sidebar';
 import { UnaOrb } from '@/components/una/una-orb';
 import { CommandBar } from '@/components/command-bar/command-bar';
 import { SoundscapeController } from '@/components/ambient/soundscape-controller';
+import { BottomNav } from '@/components/navigation/bottom-nav';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
@@ -25,8 +26,8 @@ function getRealmFromPathname(pathname: string | null): InstanceType {
 }
 
 export function AppShell({ children }: AppShellProps) {
-  const { isSidebarOpen, setSidebarOpen, focusModeActive, setCurrentInstance, toggleFocusMode } = useInstanceStore();
-  const [isActivityOpen, setActivityOpen] = useState(false);
+  const { isSidebarOpen, setSidebarOpen, focusModeActive, setCurrentInstance, toggleFocusMode, isActivityOpen, toggleActivityOpen } = useInstanceStore();
+  const [isMobileActivityOpen, setMobileActivityOpen] = useState(false);
   const pathname = usePathname();
 
   // Sync realm from pathname
@@ -39,7 +40,7 @@ export function AppShell({ children }: AppShellProps) {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1280) {
-        setActivityOpen(false);
+        setMobileActivityOpen(false);
         setSidebarOpen(false);
       } else if (window.innerWidth >= 1024) {
         setSidebarOpen(false);
@@ -63,7 +64,7 @@ export function AppShell({ children }: AppShellProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [toggleFocusMode]);
 
-  const isOverlayVisible = isSidebarOpen || isActivityOpen;
+  const isOverlayVisible = isSidebarOpen || isMobileActivityOpen;
   const currentRealm = getRealmFromPathname(pathname);
   const isNexus = currentRealm === 'nexus';
 
@@ -79,7 +80,7 @@ export function AppShell({ children }: AppShellProps) {
             transition={{ duration: 0.3 }}
             onClick={() => {
               setSidebarOpen(false);
-              setActivityOpen(false);
+              setMobileActivityOpen(false);
             }}
             className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 xl:hidden cursor-pointer"
           />
@@ -94,17 +95,22 @@ export function AppShell({ children }: AppShellProps) {
 
         {/* Top Header */}
         <div className="focus-dimmable">
-          <TopHeader onToggleActivity={() => setActivityOpen(!isActivityOpen)} />
+          <TopHeader onToggleActivity={() => setMobileActivityOpen(!isMobileActivityOpen)} />
         </div>
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 pb-12 md:pb-8 flex flex-col gap-6 md:gap-8 relative z-10">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 pb-16 md:pb-8 flex flex-col gap-6 md:gap-8 relative z-10">
           {children}
         </div>
       </main>
 
       {/* Right Activity Sidebar */}
-      <ActivitySidebar isOpen={isActivityOpen} onClose={() => setActivityOpen(false)} />
+      <ActivitySidebar
+        isOpen={isMobileActivityOpen}
+        onClose={() => setMobileActivityOpen(false)}
+        isDesktopOpen={isActivityOpen}
+        onToggleDesktop={toggleActivityOpen}
+      />
 
       {/* Omnipresent: Una Orb */}
       <UnaOrb />
@@ -114,6 +120,9 @@ export function AppShell({ children }: AppShellProps) {
 
       {/* Omnipresent: Soundscapes */}
       <SoundscapeController />
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }

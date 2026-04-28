@@ -35,14 +35,6 @@ export function TopHeader({ onToggleActivity }: TopHeaderProps) {
   return (
     <header className="h-20 px-4 md:px-8 flex items-center justify-between border-b border-[#333a47]/20 shadow-[0_1px_10px_rgba(0,0,0,0.5)] relative z-10 bg-[#11141a]/80 backdrop-blur-md shrink-0">
       <div className="flex items-center gap-3 flex-1 sm:flex-none">
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="lg:hidden neu-raised w-10 h-10 rounded-xl flex items-center justify-center text-slate-300 active:translate-y-px shrink-0"
-        >
-          <Icon icon="solar:hamburger-menu-linear" width={20} />
-        </button>
-
         {/* Command Bar Trigger (replaces basic search) */}
         <button
           onClick={openCommandBar}
@@ -111,6 +103,14 @@ export function TopHeader({ onToggleActivity }: TopHeaderProps) {
         >
           <div className="absolute inset-0 bg-orange-500/10 mix-blend-overlay" />
           <Icon icon="solar:history-linear" width={20} className="relative z-10" />
+        </button>
+
+        {/* Mobile Menu Button — right side */}
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="lg:hidden neu-raised w-10 h-10 rounded-xl flex items-center justify-center text-slate-300 active:translate-y-px shrink-0"
+        >
+          <Icon icon="solar:hamburger-menu-linear" width={20} />
         </button>
       </div>
     </header>
